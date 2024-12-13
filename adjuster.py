@@ -8,6 +8,8 @@ def timestampToSeconds(timestamp):
     
     
 def secondsToTimestamp(seconds):
+    seconds = max(int(seconds), 0)
+    
     hours = seconds // (60*60)
     seconds = seconds % (60*60)
     minutes = seconds // (60)
@@ -36,31 +38,32 @@ assert secondsToTimestamp(60) == "00:01:00"
 assert secondsToTimestamp(60*60+12) == "01:00:12"
 
 
+input_filepath = input("INPUT FILEPATH: Please enter the filepath of the .srt file you'd like to offset: ").strip('"')
 
 
 
-with open("raw_captions.txt", "r") as file:
+with open(input_filepath, "r") as file:
     testInput = "".join(file.readlines())
-
-
 
 timestampRE = "\d\d\:\d\d\:\d\d"
 
 timestamps = re.findall(timestampRE, testInput)
-print(f"{timestamps=}")
 splitText = re.split(timestampRE, testInput)
-print(f"{splitText}")
 
+print("Input Successful")
+
+offset = int(input("OFFSET: Please enter the number of seconds you'd like to offset the .srt file: "))
 
 fixedText = ""
 for i, timestamp in enumerate(timestamps):
     fixedText += splitText[i]
-    fixedText += secondsToTimestamp(timestampToSeconds(timestamp) + 25)
+    fixedText += secondsToTimestamp(timestampToSeconds(timestamp) + offset)
 fixedText += splitText[-1]
 
-print(f"{fixedText=}")
-
-with open("PK.srt", "w") as file:
+print("Process Complete.")
+output_filepath = input("OUTPUT FILEPATH: Please enter the filepath of the .srt file you'd like to output to: ").strip('"')
+with open(output_filepath, "w") as file:
     file.write(fixedText)
-    
+
+print("Output Successful.")
 
